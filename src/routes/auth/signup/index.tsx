@@ -21,15 +21,11 @@ import { Form } from "~/components/form";
 export const useUser = routeLoader$(async (event) => {
   const cookie = event.cookie.get("intasks_cookie");
 
-  if (!cookie) {
-    throw event.redirect(302, "/auth/login");
-  }
+  if (!cookie) return;
 
   const sessionId = lucia.readSessionCookie("intasks_cookie=" + cookie.value);
 
-  if (!sessionId) {
-    throw event.redirect(302, "/auth/login");
-  }
+  if (!sessionId) return;
 
   const { user } = await lucia.validateSession(sessionId);
 

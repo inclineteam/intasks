@@ -6,4 +6,65 @@
 @tailwind components;
 @tailwind utilities;
 
+/* - start toast styles - */
+:root {
+  --slide-from: 0;
+  --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-out: cubic-bezier(0, 0.55, 0.45, 1);
+}
 
+.animation {
+  animation: animate 3s forwards;
+}
+
+.toast-item {
+  --slide-from: 100%;
+  transition: 0.3s;
+  animation:
+    stayhidden 0.05s,
+    slideup 0.3s 0.05s var(--ease-out);
+}
+
+.toast-item.leave {
+  opacity: 0;
+  animation:
+    fadeout 0.3s var(--ease-in),
+    scaledown 0.3s var(--ease-in);
+}
+
+@keyframes animate {
+  0% {
+    width: 100%;
+  }
+  100% {
+    width: 0%;
+  }
+}
+
+@keyframes stayhidden {
+  from,
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideup {
+  from {
+    opacity: 0;
+    transform: translateY(var(--slide-from, 10px));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+/* - end toast styles - */
