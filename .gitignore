@@ -36,6 +36,9 @@ lerna-debug.log*
 *.sln
 *.sw?
 
+# Env
+.env
+
 # Yarn
 .yarn/*
 !.yarn/releases

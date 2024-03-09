@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @id @unique @default(cuid())
+  sessions       Session[]
+  profile        Profile?
+  email          String    @unique
+  email_verified Boolean
+  username       String    @unique
+  password       String
+  isNew          Boolean   @default(true)
+}
+
+model Profile {
+  id                   String    @id @unique @default(cuid())
+  user                 User      @relation(references: [id], fields: [userId])
+  userId               String    @unique
+  email                String    @unique
+  firstname            String
+  avatar               String?
+  lastname             String
+  username             String    @unique
+  projects             Project[]
+  assignedTasks        Task[]
+  collaboratedProjects Project[] @relation("ProjectCollaborator")
+  comments             Comment[]
+}
+
+model Session {
+  id        String   @id @unique @default(cuid())
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model EmailVerificationCode {
+  id        String   @id @unique @default(cuid())
+  code      String
+  userId    String   @unique
+  email     String
+  expiresAt DateTime
+}
+
+model Project {
+  id            String    @id
+  createdBy     Profile   @relation(references: [id], fields: [createdById])
+  createdById   String    @unique
+  collaborators Profile[] @relation("ProjectCollaborator")
+  title         String
+  tasks         Task[]
+}
+
+model Task {
+  id          String       @id
+  assigned    Profile      @relation(references: [id], fields: [assignedId])
+  assignedId  String
+  title       String
+  description String
+  deadline    DateTime?
+  project     Project      @relation(references: [id], fields: [projectId])
+  projectId   String
+  status      TaskProgress @default(INPROGRESS)
+  comments    Comment[]
+}
+
+model Comment {
+  id          String    @id
+  commentor   Profile   @relation(references: [id], fields: [commentorId])
+  commentorId String    @unique
+  content     String
+  task        Task      @relation(references: [id], fields: [taskId])
+  taskId      String
+  replies     Comment[] @relation("CommentReplies")
+  parent      Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  parentId    String?
+}
+
+enum TaskProgress {
+  INPROGRESS
+  CANCELLED
+  FINISHED
+}
