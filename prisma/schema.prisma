@@ -25,18 +25,20 @@ model User {
 }
 
 model Profile {
-  id                   String    @id @unique @default(cuid())
-  user                 User      @relation(references: [id], fields: [userId])
-  userId               String    @unique
-  email                String    @unique
+  id                   String       @id @unique @default(cuid())
+  user                 User         @relation(references: [id], fields: [userId])
+  userId               String       @unique
+  email                String       @unique
   firstname            String
   avatar               String?
   lastname             String
-  username             String    @unique
+  username             String       @unique
   projects             Project[]
   assignedTasks        Task[]
-  collaboratedProjects Project[] @relation("ProjectCollaborator")
+  collaboratedProjects Project[]    @relation("ProjectCollaborator")
   comments             Comment[]
+  invitedUsers         Invitation[] @relation("UserInvites")
+  invites              Invitation[]
 }
 
 model Session {
@@ -55,16 +57,17 @@ model EmailVerificationCode {
 }
 
 model Project {
-  id            String    @id
-  createdBy     Profile   @relation(references: [id], fields: [createdById])
-  createdById   String    @unique
-  collaborators Profile[] @relation("ProjectCollaborator")
+  id            String       @id @unique @default(cuid())
+  createdBy     Profile      @relation(references: [id], fields: [createdById])
+  createdById   String       @unique
+  collaborators Profile[]    @relation("ProjectCollaborator")
   title         String
   tasks         Task[]
+  invitations   Invitation[]
 }
 
 model Task {
-  id          String       @id
+  id          String       @id @unique @default(cuid())
   assigned    Profile      @relation(references: [id], fields: [assignedId])
   assignedId  String
   title       String
@@ -76,8 +79,23 @@ model Task {
   comments    Comment[]
 }
 
+model Invitation {
+  id        String  @id @unique @default(cuid())
+  sentBy    Profile @relation("UserInvites", fields: [sentById], references: [id])
+  sentById  String
+  sentTo    Profile @relation(fields: [sentToId], references: [id])
+  sentToId  String
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId String
+}
+
+model Notification {
+  id      String @id @unique @default(cuid())
+  content String
+}
+
 model Comment {
-  id          String    @id
+  id          String    @id @unique @default(cuid())
   commentor   Profile   @relation(references: [id], fields: [commentorId])
   commentorId String    @unique
   content     String

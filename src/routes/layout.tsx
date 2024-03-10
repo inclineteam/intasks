@@ -1,17 +1,6 @@
 import { component$, Slot } from "@builder.io/qwik";
-import type { RequestHandler } from "@builder.io/qwik-city";
 import { Toaster, useToasterProvider } from "../components/toast";
-
-export const onGet: RequestHandler = async ({ cacheControl }) => {
-  // Control caching for this request for best performance and to reduce hosting costs:
-  // https://qwik.builder.io/docs/caching/
-  cacheControl({
-    // Always serve a cached response by default, up to a week stale
-    staleWhileRevalidate: 60 * 60 * 24 * 7,
-    // Max once every 5 seconds, revalidate on the server to get a fresh version of this page
-    maxAge: 5,
-  });
-};
+import { Sidebar } from "~/components/sidebar/container";
 
 export default component$(() => {
   useToasterProvider();
@@ -19,7 +8,13 @@ export default component$(() => {
   return (
     <>
       <Toaster />
-      <Slot />
+      <div class="flex min-h-screen bg-zinc-100">
+        <Sidebar />
+
+        <div class="flex-1 rounded-l-2xl border border-zinc-200 bg-white p-8">
+          <Slot />
+        </div>
+      </div>
     </>
   );
 });

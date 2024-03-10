@@ -6,11 +6,13 @@ import {
   z,
   Form as QwikForm,
   routeLoader$,
+  useNavigate,
 } from "@builder.io/qwik-city";
 import { Card } from "~/components/card";
 import { prisma } from "~/lib/db";
 import { lucia } from "~/lib/lucia";
 import { Form } from "~/components/form";
+import { useToaster } from "~/components/toast";
 
 export const useUser = routeLoader$(async (event) => {
   const cookie = event.cookie.get("intasks_cookie");
@@ -67,7 +69,7 @@ export const useCreateProfile = routeAction$(
       },
     });
 
-    await prisma.profile.create({
+    const profile = await prisma.profile.create({
       data: {
         username: form.username,
         lastname: form.lastname,
@@ -81,7 +83,11 @@ export const useCreateProfile = routeAction$(
       },
     });
 
-    throw event.redirect(303, "/");
+    // throw event.redirect(303, "/")
+    return {
+      success: true,
+      profile,
+    };
   },
   zod$({
     firstname: z.string(),
@@ -93,11 +99,27 @@ export const useCreateProfile = routeAction$(
 export default component$(() => {
   const createProfile = useCreateProfile();
   const user = useUser();
+  const nav = useNavigate();
+  const { toast } = useToaster();
 
   return (
     <div class="w-full max-w-lg">
       <Card>
-        <QwikForm action={createProfile}>
+        <QwikForm
+          action={createProfile}
+          onSubmitCompleted$={() => {
+            if (createProfile.value?.success) {
+              toast(
+                `Welcome to Intasksm, ${createProfile.value.profile.firstname}!`,
+                {
+                  description:
+                    "Your profile was successfully created. Build amazing projects!",
+                },
+              );
+              nav("/");
+            }
+          }}
+        >
           <div class="pb-8">
             <h1 class="text-2xl font-semibold tracking-tight text-zinc-700">
               Create your profile

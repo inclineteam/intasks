@@ -11,6 +11,7 @@
   --slide-from: 0;
   --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
   --ease-out: cubic-bezier(0, 0.55, 0.45, 1);
+  --qwikui-collapsible-content-height: 0px;
 }
 
 .animation {
@@ -49,11 +50,12 @@
 }
 
 @keyframes slideup {
-  from {
+  0% {
     opacity: 0;
     transform: translateY(var(--slide-from, 10px));
   }
-  to {
+
+  100% {
     opacity: 1;
     transform: translateY(0);
   }
@@ -62,9 +64,103 @@
 @keyframes fadeout {
   from {
     opacity: 1;
+    transform: translateX(0);
   }
+
+  to {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+}
+/* - end toast styles - */
+
+/* - start modal styles - */
+.modal-animation {
+  animation: modalIn 0.3s forwards;
+}
+
+.modal-animation::backdrop {
+  animation: modalBackdropIn 0.3s forwards;
+}
+
+.modal-animation.modal-closing {
+  animation: modalOut 0.3s forwards;
+}
+
+.modal-animation.modal-closing::backdrop {
+  animation: modalBackdropOut 0.3s forwards;
+}
+
+@keyframes modalIn {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes modalBackdropIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalBackdropOut {
+  from {
+    opacity: 1;
+  }
+
   to {
     opacity: 0;
   }
 }
-/* - end toast styles - */
+
+@keyframes modalOut {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+}
+
+/* - end collapsible styles - */
+.anim-parent[data-state="open"] .my-animation {
+  animation: 0.3s collapsible-open forwards;
+}
+
+.anim-parent[data-state="closed"] .my-animation {
+  animation: 0.5s collapsible-close forwards;
+}
+
+@keyframes collapsible-open {
+  from {
+    height: 0px;
+  }
+
+  to {
+    height: var(--qwikui-collapsible-content-height);
+  }
+}
+
+@keyframes collapsible-close {
+  from {
+    height: var(--qwikui-collapsible-content-height);
+  }
+
+  to {
+    height: 0px;
+  }
+}
+/* - end collapsible styles - */
