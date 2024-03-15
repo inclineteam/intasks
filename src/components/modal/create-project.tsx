@@ -204,6 +204,7 @@ export const CreateProjectModal = component$(() => {
               Cancel
             </Button>
             <Button
+              disabled={title.value ? false : true}
               onClick$={async () => {
                 const createdProject = await createProject(
                   title.value,

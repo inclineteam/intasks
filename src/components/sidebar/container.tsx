@@ -1,5 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { SidebarLink } from "./link";
+import { useUser } from "~/routes/plugin@auth";
 import {
   LuCheckSquare,
   LuFolder,
@@ -31,6 +32,7 @@ export const Sidebar = component$(() => {
       name: "Settings",
     },
   ];
+  const profile = useUser();
 
   return (
     <div class="min-w-[18rem] px-10 pt-10">
@@ -40,6 +42,16 @@ export const Sidebar = component$(() => {
       </header>
 
       <hr class="my-8" />
+
+      <div class="mb-6 flex items-center space-x-2">
+        <div class="h-10 w-10 rounded-full bg-gradient-to-br from-cyan-400 to-violet-600"></div>
+        <div class="text-sm">
+          <p class="font-semibold leading-none">
+            {profile.value?.firstname} {profile.value?.lastname}
+          </p>
+          <p class="text-zinc-500">@{profile.value?.username}</p>
+        </div>
+      </div>
 
       <nav>
         <ul class="space-y-2">

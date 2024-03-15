@@ -83,7 +83,7 @@ export const Toaster = component$(() => {
   return (
     <ul
       ref={toaster}
-      class="fixed bottom-0 right-2 z-50 flex flex-col gap-2 p-3"
+      class="fixed bottom-0 right-2 z-[999] flex flex-col gap-2 p-3"
     >
       {toasts.value.map((toast) => (
         <Toast key={toast.id} toast={toast} />
