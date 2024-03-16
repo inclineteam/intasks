@@ -117,10 +117,23 @@ export const CreateProjectModal = component$(() => {
         bind:show={createProjectModal}
         class="modal-animation w-full max-w-xl overflow-auto rounded-xl p-8 backdrop:bg-black/40"
       >
-        <h1 class="text-2xl font-semibold tracking-tight">Create project</h1>
+        <h1 class="text-xl font-semibold tracking-tight text-zinc-800">
+          Create project
+        </h1>
         <div class="mt-8">
           <div class="mb-4">
             <Form.Label>Project title</Form.Label>
+            <input
+              bind:value={title}
+              type="text"
+              name="confirm_password"
+              id="confirm_password"
+              class="w-full rounded-md border border-zinc-300 bg-transparent px-4 py-2 text-sm shadow-sm outline-none focus:border-zinc-500 focus:ring-4 focus:ring-zinc-200"
+            />
+          </div>
+
+          <div class="mb-4">
+            <Form.Label>Target deadline</Form.Label>
             <input
               bind:value={title}
               type="text"
@@ -132,7 +145,7 @@ export const CreateProjectModal = component$(() => {
 
           <div class="mb-4">
             <Form.Label>Invite collaborators</Form.Label>
-            <div class="rounded-md border border-zinc-300">
+            <div class="rounded-md border border-zinc-300 shadow-sm">
               <div class="relative flex items-center p-1 px-4 pr-1">
                 <div>
                   <LuAtSign class="h-4 w-4 text-zinc-500" />

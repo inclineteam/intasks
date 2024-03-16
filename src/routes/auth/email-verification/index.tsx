@@ -9,6 +9,7 @@ import {
   sendVerificationCode,
 } from "~/utils/email";
 import { prisma } from "~/lib/db";
+import { Button } from "~/components/button";
 
 export const useResendCode = routeAction$(async (data, event) => {
   const cookie = event.cookie.get("intasks_cookie");
@@ -133,20 +134,15 @@ export default component$(() => {
 
           <OTPInput onComplete$={(pin) => verifyCode.submit({ code: pin })} />
 
-          <div class="mt-8 flex space-x-2">
-            <button
+          <div class="mt-8 flex justify-end space-x-2">
+            <Button
               type="button"
+              variant="secondary"
               onClick$={() => resendCode.submit()}
-              class="flex w-full items-center justify-center space-x-4 rounded-md border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 outline-none ring-zinc-500 ring-offset-2 hover:bg-zinc-100 focus:border-zinc-500 focus:ring-2 active:bg-zinc-50"
+              class="w-max"
             >
               <span>Resend code</span>
-            </button>
-            <button
-              type="button"
-              class="w-full rounded-md border border-transparent bg-zinc-800 px-4 py-2 text-sm font-medium text-white ring-zinc-500 ring-offset-2 hover:bg-zinc-600 focus:ring-2 active:bg-zinc-700"
-            >
-              Continue
-            </button>
+            </Button>
           </div>
         </Form>
       </Card>

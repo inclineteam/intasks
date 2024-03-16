@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useSignal } from "@builder.io/qwik";
 import {
   routeAction$,
   type DocumentHead,
@@ -6,6 +6,7 @@ import {
   z,
   Form as QwikForm,
   routeLoader$,
+  Link,
 } from "@builder.io/qwik-city";
 import { BsGithub, BsGoogle } from "@qwikest/icons/bootstrap";
 import { Card } from "~/components/card";
@@ -13,6 +14,7 @@ import { prisma } from "~/lib/db";
 import { verifyPassword } from "qwik-lucia";
 import { handleRequest, lucia } from "~/lib/lucia";
 import { Form } from "~/components/form";
+import { Button } from "~/components/button";
 
 export const useUser = routeLoader$(async (event) => {
   const cookie = event.cookie.get("intasks_cookie");
@@ -70,6 +72,8 @@ export const useLogin = routeAction$(
 
 export default component$(() => {
   const login = useLogin();
+  const email = useSignal("");
+  const password = useSignal("");
 
   return (
     <div class="w-full max-w-lg">
@@ -87,6 +91,7 @@ export default component$(() => {
           <div class="mb-4">
             <Form.Label>Email Address</Form.Label>
             <input
+              bind:value={email}
               type="text"
               name="email"
               id="email"
@@ -97,6 +102,7 @@ export default component$(() => {
           <div class="mb-4">
             <Form.Label>Password</Form.Label>
             <input
+              bind:value={password}
               type="password"
               name="password"
               id="password"
@@ -110,9 +116,22 @@ export default component$(() => {
             </div>
           ) : null}
 
-          <button class="mt-4 w-full rounded-md border border-transparent bg-zinc-800 px-4 py-2 text-sm font-medium text-white ring-zinc-500 ring-offset-2 hover:bg-zinc-600 focus:ring-2 active:bg-zinc-700">
+          <Button
+            disabled={!email.value || !password.value ? true : false}
+            class="mt-8"
+          >
             Log in
-          </button>
+          </Button>
+
+          <p class="mt-4 text-center text-sm text-zinc-500">
+            Don't have an account?{" "}
+            <Link
+              href="/auth/signup"
+              class="font-semibold text-zinc-800 underline-offset-2 hover:underline"
+            >
+              Create one
+            </Link>
+          </p>
 
           <div class="relative my-8 w-full border-t border-zinc-200">
             <span class="absolute left-1/2 top-1/2 block -translate-x-1/2 -translate-y-1/2 bg-white px-4 text-xs text-zinc-500">

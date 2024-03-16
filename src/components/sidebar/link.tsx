@@ -26,7 +26,7 @@ export const SidebarLink = component$<ISidebarLink>((props) => {
         locationPathname.charAt(startSlashPosition) === "/"));
 
   return (
-    <li>
+    <li class="list-none">
       <Link
         href={props.link}
         class={[

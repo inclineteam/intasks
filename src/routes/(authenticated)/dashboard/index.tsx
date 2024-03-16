@@ -33,8 +33,31 @@ export const useFeed = routeLoader$(async (event) => {
   });
 
   const invitations = await prisma.invitation.findMany({
+    where: {
+      sentToId: profile?.id,
+    },
     include: {
       sentBy: {
+        select: {
+          username: true,
+        },
+      },
+
+      project: {
+        select: {
+          title: true,
+          collaborators: true,
+        },
+      },
+    },
+  });
+
+  const sentInvitations = await prisma.invitation.findMany({
+    where: {
+      sentById: profile?.id,
+    },
+    include: {
+      sentTo: {
         select: {
           username: true,
         },
@@ -54,6 +77,7 @@ export const useFeed = routeLoader$(async (event) => {
     ongoingTasks,
     completedTasks,
     invitations,
+    sentInvitations,
   };
 });
 
@@ -77,7 +101,10 @@ export default component$(() => {
           <Button class="w-max p-2" variant="secondary">
             <LuBell class="h-5 w-5" />
           </Button>
-          <InvitationsDropdown invitations={feed.value.invitations} />
+          <InvitationsDropdown
+            invitations={feed.value.invitations}
+            sentInvitations={feed.value.sentInvitations}
+          />
           <CreateProjectModal />
           <Link href="/settings">
             <Button class="p-2" variant="secondary">
@@ -120,12 +147,9 @@ export default component$(() => {
         Projects
       </h1>
       {feed.value.projects.length ? (
-        <div class="grid grid-cols-4">
+        <div class="flex flex-wrap gap-4">
           {feed.value.projects.map((project) => (
-            <div
-              key={project.id}
-              class="rounded-md border border-zinc-200 p-8 shadow-sm"
-            >
+            <Card key={project.id} class="w-full max-w-xs">
               <span class="mb-2 block w-max rounded-full text-sm font-medium text-orange-600">
                 Ongoing
               </span>
@@ -137,7 +161,7 @@ export default component$(() => {
                   {project.collaborators.length} Collaborators
                 </p>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       ) : (
